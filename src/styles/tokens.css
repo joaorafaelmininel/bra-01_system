@@ -1,0 +1,26 @@
+:root {
+  /* ── Cores ─────────────────────────────────────────── */
+  --black:   #0D1117;
+  --black2:  #131920;
+  --black3:  #1A2332;
+  --black4:  #1F2A3C;
+  --black5:  #243044;
+
+  --un-blue:  #009EDB;
+  --ins-blue: #004B87;
+  --red:      #CC0000;
+  --orange:   #E87722;
+  --green:    #00A550;
+  --white:    #FFFFFF;
+
+  --gray1: #E8EDF5;
+  --gray2: #9BA8BC;
+  --gray3: #5A6478;
+  --gray4: #2E3848;
+  --gray5: #1E2535;
+
+  /* ── Tipografia ─────────────────────────────────────── */
+  --font-cond: 'Barlow Condensed', sans-serif;
+  --font-body: 'Barlow', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}

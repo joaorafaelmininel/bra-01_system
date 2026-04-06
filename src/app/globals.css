@@ -1,0 +1,13 @@
+@import "tailwindcss";
+@import "../styles/tokens.css";
+
+@theme inline {
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-mono);
+}
+
+body {
+  background-color: var(--black);
+  color: var(--gray1);
+  font-family: var(--font-body);
+}
