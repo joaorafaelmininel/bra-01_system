@@ -3,12 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 
-type LoginState = { error: string } | undefined
-
-export async function login(
-  _prevState: LoginState,
-  formData: FormData
-): Promise<LoginState> {
+export async function login(formData: FormData) {
   const supabase = await createClient()
 
   const { error } = await supabase.auth.signInWithPassword({
@@ -16,10 +11,7 @@ export async function login(
     password: formData.get('password') as string,
   })
 
-  if (error) {
-    return { error: 'Credenciais inválidas. Verifique seu e-mail e senha.' }
-  }
-
+  if (error) redirect('/login?error=1')
   redirect('/')
 }
 
