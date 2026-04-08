@@ -233,7 +233,7 @@ export default function OrganogramaPrint({
                 fontFamily: 'JetBrains Mono, monospace',
                 fontSize: 8, color: '#64748B',
                 letterSpacing: '0.14em', textTransform: 'uppercase', marginTop: 3,
-              }}>CBPMESP · CBMMG · CBMPR · Sistema de Gestão da Equipe</div>
+              }}> CBMMG · CBMPR · CBPMESP · Sistema de Gestão da Equipe</div>
             </div>
           </div>
 

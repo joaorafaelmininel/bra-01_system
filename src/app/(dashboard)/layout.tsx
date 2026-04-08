@@ -190,7 +190,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
             color: 'rgba(255,255,255,0.7)',
           }}>BRA-01 Heavy USAR Team · INSARAG IEC Preparation</div>
           <div style={{ display: 'flex', gap: 20 }}>
-            {['CBPMESP · São Paulo', 'CBMMG · Minas Gerais', 'CBMPR · Paraná'].map((corp, i) => (
+            {['CBMMG · Minas Gerais', 'CBMPR · Paraná', 'CBPMESP · São Paulo'].map((corp, i) => (
               <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 6, fontFamily: 'var(--font-mono)', fontSize: 10, color: 'rgba(255,255,255,0.5)' }}>
                 <span style={{
                   fontFamily: 'var(--font-cond)', fontSize: 11, fontWeight: 700,

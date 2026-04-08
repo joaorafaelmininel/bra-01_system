@@ -338,7 +338,7 @@ export default function LoginPage() {
           </div>
 
           <div className="left-footer">
-            {['CBPMESP', 'CBMMG', 'CBMPR'].map(corp => (
+            {['CBMMG', 'CBMPR', 'CBPMESP'].map(corp => (
               <span key={corp} className="corp-badge">{corp}</span>
             ))}
           </div>
