@@ -226,7 +226,7 @@ export default function OrganogramaClient({functions,designations,members}:Props
     setPdfLoading(true)
     try {
       const {generateOrganogramaPDF} = await import('@/lib/generateOrganogramaPDF')
-      generateOrganogramaPDF(functions, localDesig)
+      generateOrganogramaPDF(functions as any[], localDesig as any[])
     } catch(e) {
       console.error('PDF error:', e)
       alert('Erro ao gerar PDF. Verifique se o pacote jspdf está instalado: pnpm add jspdf')
