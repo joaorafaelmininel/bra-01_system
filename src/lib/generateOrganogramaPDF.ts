@@ -265,7 +265,7 @@ export function generateOrganogramaPDF(
       font('bold',6.5); T(mgmtPal.h)
       fit(mname(pm,18), cx+8.5, cy+ch-8.5, tw-4)
       font('normal',5.5); T(C.muted)
-      fit(pm?.instituicao??'', cx+8.5, cy+ch-5)
+      fit(pm?.instituicao??'', cx+8.5, cy+ch-5, tw-4)
 
       if (al) {
         F([50,120,210]); d.circle(cx+5.8, cy+ch-2.8, 1.1, 'F')
