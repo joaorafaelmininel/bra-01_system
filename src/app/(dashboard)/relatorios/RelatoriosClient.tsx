@@ -144,7 +144,7 @@ export default function RelatoriosClient({
     const semPassaporte = activeMembers.filter(m => !passaporteOk(m.passaporte_validade))
     if (semPassaporte.length > 0) g.push({ priority: semPassaporte.length > 3 ? 'critico' : 'alerta', label:`${semPassaporte.length} membro${semPassaporte.length>1?'s':''} com passaporte vencido ou ausente`, detail:`${semPassaporte.slice(0,3).map(m=>m.nome_guerra??m.nome_completo.split(' ')[0]).join(', ')}${semPassaporte.length>3?'...':''}`, link:'/pessoal', category:'Efetivo' })
 
-    if (totalMembers < 22) g.push({ priority:'alerta', label:`Efetivo abaixo do mínimo para Heavy (${totalMembers}/22)`, detail:'INSARAG recomenda mínimo de 45-67 membros para Heavy classification', link:'/pessoal', category:'Efetivo' })
+    if (totalMembers < 22) g.push({ priority:'alerta', label:`Efetivo abaixo do mínimo para Heavy (${totalMembers}/22)`, detail:'INSARAG estabelece mínimo de 63 componentes efetivos para composição de Heavy Team', link:'/pessoal', category:'Efetivo' })
     else g.push({ priority:'ok', label:`Efetivo ativo: ${totalMembers} membros`, detail:'', link:'/pessoal', category:'Efetivo' })
 
     // Organograma
