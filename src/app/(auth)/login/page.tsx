@@ -34,7 +34,7 @@ export default function LoginPage() {
               autoComplete="email"
               required
               className="w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3.5 py-2.5 text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-              placeholder="operador@bombeiros.gov.br"
+              placeholder="endereço de e-mail"
             />
           </div>
 
