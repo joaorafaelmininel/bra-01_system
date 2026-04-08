@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 const navItems = [
-  { label: 'Portal',                    href: '/' },
+  { label: 'Painel de Gestão',                    href: '/' },
   { label: 'Efetivo',                   href: '/pessoal' },
   { label: 'Equipamentos',              href: '/equipamentos' },
   { label: 'Capacitação/Especializações', href: '/treinamento' },
