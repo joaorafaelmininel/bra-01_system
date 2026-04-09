@@ -1,12 +1,12 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
-type Section   = Record<string, any>
-type Group     = Record<string, any>
-type Member    = Record<string, any>
+type Section    = Record<string, any>
+type Group      = Record<string, any>
+type Member     = Record<string, any>
 type ParentItem = Record<string, any>
 
 type Props = {
@@ -52,18 +52,12 @@ function SectionTitle({ num, children }: { num: string; children: React.ReactNod
   )
 }
 
-// Gera o código do item baseado na seção selecionada
-function generateCode(sectionCodigo: string, groupCodigo: string, tipo: string) {
-  if (!sectionCodigo) return ''
-  const prefix = groupCodigo || sectionCodigo
-  const suffix = tipo === 'Subcomponente' ? '.01' : '.00'
-  return `${prefix}-XXXX${suffix}`
-}
-
 export default function NovoEquipamentoForm({ sections, groups, members, parentItems }: Props) {
   const router = useRouter()
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading]       = useState(false)
+  const [generating, setGenerating] = useState(false)
+  const [error, setError]           = useState<string | null>(null)
+  const [codeEdited, setCodeEdited] = useState(false)
 
   const [form, setForm] = useState({
     section_id:          sections[0]?.id ?? '',
@@ -87,18 +81,64 @@ export default function NovoEquipamentoForm({ sections, groups, members, parentI
   })
 
   function set(field: string) {
-    return (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    return (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
       setForm(prev => ({ ...prev, [field]: e.target.value }))
-    }
   }
 
-  // Grupos filtrados pela seção selecionada
   const filteredGroups = useMemo(() =>
     groups.filter(g => g.section_id === form.section_id),
     [groups, form.section_id]
   )
 
   const selectedSection = sections.find(s => s.id === form.section_id)
+  const selectedGroup   = groups.find(g => g.id === form.group_id)
+
+  // ── Geração automática do código ─────────────────────────────────────────────
+  const generateNextCode = useCallback(async (sectionId: string, groupId: string, tipo: string) => {
+    if (!sectionId) return
+    setGenerating(true)
+
+    const sec = sections.find(s => s.id === sectionId)
+    const grp = groups.find(g => g.id === groupId)
+
+    // Prefixo: código do grupo já inclui a seção (ex: "RA", "MB") ou só seção se sem grupo (ex: "R")
+    const prefix = grp ? grp.codigo : (sec?.codigo ?? '')
+    const suffix = tipo === 'Subcomponente' ? '.01' : '.00'
+
+    const supabase = createClient()
+
+    // Busca o último código com esse prefixo
+    const { data } = await supabase
+      .from('equipment')
+      .select('codigo_item')
+      .like('codigo_item', `${prefix}-%`)
+      .order('codigo_item', { ascending: false })
+      .limit(1)
+
+    let nextNum = 1
+
+    if (data && data.length > 0) {
+      // Extrai o número sequencial: "RA-0101.00" → "0101" → 101
+      const lastCode = data[0].codigo_item as string
+      const match = lastCode.match(/-(\d{4})\./)
+      if (match) {
+        nextNum = parseInt(match[1], 10) + 1
+      }
+    }
+
+    // Formata com 4 dígitos: 1 → "0001"
+    const seq = String(nextNum).padStart(4, '0')
+    const generated = `${prefix}-${seq}${suffix}`
+
+    setForm(prev => ({ ...prev, codigo_item: generated }))
+    setGenerating(false)
+  }, [sections, groups])
+
+  // Regenera o código quando muda seção, grupo ou tipo — a menos que o usuário tenha editado manualmente
+  useEffect(() => {
+    if (codeEdited) return
+    generateNextCode(form.section_id, form.group_id, form.tipo_item)
+  }, [form.section_id, form.group_id, form.tipo_item, codeEdited, generateNextCode])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -145,7 +185,6 @@ export default function NovoEquipamentoForm({ sections, groups, members, parentI
   return (
     <div style={{ maxWidth: 880, margin: '0 auto', padding: '24px 24px 60px' }}>
 
-      {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
         <button onClick={() => router.back()} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 3, padding: '6px 10px', cursor: 'pointer', color: '#9BA8BC', fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.1em' }}>
           ← VOLTAR
@@ -164,13 +203,61 @@ export default function NovoEquipamentoForm({ sections, groups, members, parentI
           <div style={grid2}>
             <Field label="Tipo de item" required>
               <select style={inputStyle} value={form.tipo_item} onChange={e => {
+                setCodeEdited(false)
                 setForm(prev => ({ ...prev, tipo_item: e.target.value, parent_id: '' }))
               }}>
                 {TIPO_OPTS.map(t => <option key={t}>{t}</option>)}
               </select>
             </Field>
-            <Field label="Código do item" required hint="Ex: RC-0103.00 · Siga o padrão SEÇÃO-GRUPO-NNNN.VV">
-              <input style={inputStyle} value={form.codigo_item} onChange={set('codigo_item')} required placeholder={`Ex: ${selectedSection?.codigo ?? 'R'}A-0101.00`} />
+
+            <Field
+              label="Código do item"
+              required
+              hint={
+                codeEdited
+                  ? 'Código editado manualmente'
+                  : generating
+                    ? 'Gerando código...'
+                    : `Gerado automaticamente · Padrão ${selectedGroup ? `${selectedSection?.codigo ?? ''}${selectedGroup.codigo}` : selectedSection?.codigo ?? ''}-NNNN.SS`
+              }
+            >
+              <div style={{ position: 'relative' }}>
+                <input
+                  style={{
+                    ...inputStyle,
+                    borderColor: generating ? 'rgba(0,158,219,0.4)' : codeEdited ? 'rgba(232,119,34,0.4)' : 'rgba(0,165,80,0.3)',
+                    paddingRight: 80,
+                  }}
+                  value={form.codigo_item}
+                  onChange={e => {
+                    setCodeEdited(true)
+                    setForm(prev => ({ ...prev, codigo_item: e.target.value }))
+                  }}
+                  required
+                  placeholder={generating ? 'Gerando...' : 'Ex: RA-0101.00'}
+                />
+                {codeEdited && (
+                  <button
+                    type="button"
+                    onClick={() => { setCodeEdited(false) }}
+                    style={{
+                      position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)',
+                      background: 'rgba(0,158,219,0.15)', border: '1px solid rgba(0,158,219,0.3)',
+                      borderRadius: 2, padding: '2px 7px',
+                      fontFamily: 'var(--font-mono)', fontSize: 9, color: '#009EDB',
+                      cursor: 'pointer', letterSpacing: '0.08em',
+                    }}
+                  >
+                    GERAR
+                  </button>
+                )}
+                {!codeEdited && !generating && form.codigo_item && (
+                  <div style={{
+                    position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)',
+                    width: 7, height: 7, borderRadius: '50%', background: '#00A550',
+                  }} />
+                )}
+              </div>
             </Field>
           </div>
 
@@ -215,6 +302,7 @@ export default function NovoEquipamentoForm({ sections, groups, members, parentI
           <div style={grid2}>
             <Field label="Seção" required>
               <select style={inputStyle} value={form.section_id} onChange={e => {
+                setCodeEdited(false)
                 setForm(prev => ({ ...prev, section_id: e.target.value, group_id: '' }))
               }}>
                 {sections.map(s => (
@@ -223,7 +311,10 @@ export default function NovoEquipamentoForm({ sections, groups, members, parentI
               </select>
             </Field>
             <Field label="Grupo" hint="Subclassificação dentro da seção">
-              <select style={inputStyle} value={form.group_id} onChange={set('group_id')}>
+              <select style={inputStyle} value={form.group_id} onChange={e => {
+                setCodeEdited(false)
+                setForm(prev => ({ ...prev, group_id: e.target.value }))
+              }}>
                 <option value="">— Sem grupo —</option>
                 {filteredGroups.map(g => (
                   <option key={g.id} value={g.id}>[{g.codigo}] {g.nome}</option>
@@ -248,7 +339,7 @@ export default function NovoEquipamentoForm({ sections, groups, members, parentI
             </Field>
           </div>
           <div style={{ ...grid2, marginTop: 14 }}>
-            <Field label="Número de patrimônio" hint="Número interno da corporação">
+            <Field label="Número de patrimônio">
               <input style={inputStyle} value={form.numero_patrimonio} onChange={set('numero_patrimonio')} placeholder="Nº de patrimônio" />
             </Field>
             <Field label="Localização atual">
@@ -288,14 +379,12 @@ export default function NovoEquipamentoForm({ sections, groups, members, parentI
           </div>
         </div>
 
-        {/* Erro */}
         {error && (
           <div style={{ padding: '12px 16px', borderRadius: 3, background: 'rgba(204,0,0,0.12)', border: '1px solid rgba(204,0,0,0.3)', fontFamily: 'var(--font-mono)', fontSize: 11, color: '#FF6B6B' }}>
             ERRO: {error}
           </div>
         )}
 
-        {/* Submit */}
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.07)' }}>
           <button type="button" onClick={() => router.back()} style={{ padding: '8px 16px', borderRadius: 3, cursor: 'pointer', background: 'none', border: '1px solid rgba(255,255,255,0.1)', fontFamily: 'var(--font-mono)', fontSize: 11, color: '#9BA8BC', letterSpacing: '0.1em' }}>
             CANCELAR
