@@ -16,11 +16,12 @@ type Props = {
 }
 
 const faseConfig: Record<string, { color: string; bg: string; border: string }> = {
-  'Planejamento': { color: '#009EDB', bg: 'rgba(0,158,219,0.12)',  border: 'rgba(0,158,219,0.25)' },
-  'Ativação':     { color: '#FFDF00', bg: 'rgba(255,223,0,0.1)',   border: 'rgba(255,223,0,0.25)' },
-  'Em campo':     { color: '#E87722', bg: 'rgba(232,119,34,0.12)', border: 'rgba(232,119,34,0.3)' },
-  'Encerramento': { color: '#9BA8BC', bg: 'rgba(155,168,188,0.1)', border: 'rgba(155,168,188,0.2)' },
-  'Arquivada':    { color: '#2E3848', bg: 'rgba(46,56,72,0.3)',    border: 'rgba(46,56,72,0.5)' },
+  'Desmobilizado':    { color: '#5A6478', bg: 'rgba(90,100,120,0.15)',  border: 'rgba(90,100,120,0.3)' },
+  'Monitoramento':    { color: '#009EDB', bg: 'rgba(0,158,219,0.12)',   border: 'rgba(0,158,219,0.25)' },
+  'Em prontidão':     { color: '#FFDF00', bg: 'rgba(255,223,0,0.1)',    border: 'rgba(255,223,0,0.25)' },
+  'Em mobilização':   { color: '#E87722', bg: 'rgba(232,119,34,0.12)',  border: 'rgba(232,119,34,0.3)' },
+  'Desdobrado':       { color: '#FF6B6B', bg: 'rgba(204,0,0,0.12)',     border: 'rgba(204,0,0,0.3)' },
+  'Missão concluída': { color: '#00A550', bg: 'rgba(0,165,80,0.12)',    border: 'rgba(0,165,80,0.25)' },
 }
 
 const sectionColors: Record<string, string> = {
@@ -50,7 +51,6 @@ function AddButton({ onClick, label }: { onClick: () => void; label: string }) {
   return <button onClick={onClick} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 3, cursor: 'pointer', background: 'rgba(232,119,34,0.12)', border: '1px solid rgba(232,119,34,0.3)', fontFamily: 'var(--font-mono)', fontSize: 10, color: '#E87722', letterSpacing: '0.08em' }}><span style={{ fontSize: 14, lineHeight: 1 }}>+</span> {label}</button>
 }
 
-// ─── Modal base ───────────────────────────────────────────────────────────────
 function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
   return (
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
@@ -79,7 +79,6 @@ function ModalFooter({ onClose, loading, label }: { onClose: () => void; loading
   )
 }
 
-// ─── Modal participante ───────────────────────────────────────────────────────
 function ModalParticipante({ missionId, members, currentIds, usarFunctions, onClose, onSaved }: any) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -111,7 +110,6 @@ function ModalParticipante({ missionId, members, currentIds, usarFunctions, onCl
   )
 }
 
-// ─── Modal equipamento ────────────────────────────────────────────────────────
 function ModalEquipamento({ missionId, catalog, currentIds, onClose, onSaved }: any) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -142,7 +140,6 @@ function ModalEquipamento({ missionId, catalog, currentIds, onClose, onSaved }: 
   )
 }
 
-// ─── Modal checklist ──────────────────────────────────────────────────────────
 function ModalChecklist({ missionId, memberId, onClose, onSaved }: any) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -165,7 +162,6 @@ function ModalChecklist({ missionId, memberId, onClose, onSaved }: any) {
   )
 }
 
-// ─── Tabs ─────────────────────────────────────────────────────────────────────
 function TabDados({ mission }: { mission: Mission }) {
   function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
     return <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}><span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#5A6478' }}>{label}</span><span style={{ fontSize: 13, color: '#E8EDF5' }}>{value || '—'}</span></div>
@@ -250,15 +246,14 @@ function TabEquipamentos({ equipment }: { equipment: any[] }) {
 }
 
 function TabChecklist({ checklist, onToggle }: { checklist: any[]; onToggle: (id: string, done: boolean) => void }) {
-  const total   = checklist.length
-  const done    = checklist.filter(c => c.concluido).length
-  const pct     = total > 0 ? Math.round((done / total) * 100) : 0
+  const total = checklist.length
+  const done  = checklist.filter(c => c.concluido).length
+  const pct   = total > 0 ? Math.round((done / total) * 100) : 0
 
   if (checklist.length === 0) return <div style={{ background: '#131920', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 5, padding: '40px 20px', textAlign: 'center' }}><div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: '#5A6478' }}>Nenhum item no checklist de deploy</div></div>
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-      {/* Progress */}
       <div style={{ background: '#131920', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 5, padding: '12px 16px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
           <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: '#9BA8BC' }}>Progresso de deploy</span>
@@ -283,7 +278,6 @@ function TabChecklist({ checklist, onToggle }: { checklist: any[]; onToggle: (id
   )
 }
 
-// ─── Main ─────────────────────────────────────────────────────────────────────
 export default function MissaoClient({ mission, participants, equipment, checklist, members, equipmentCatalog, usarFunctions }: Props) {
   const [activeTab, setActiveTab] = useState('Dados')
   const [modal, setModal] = useState<string | null>(null)
@@ -322,8 +316,6 @@ export default function MissaoClient({ mission, participants, equipment, checkli
 
   const lider = mission.lider
   const liderName = lider ? `${lider.posto_graduacao ? lider.posto_graduacao + ' ' : ''}${lider.nome_guerra ?? lider.nome_completo}` : null
-
-  // primeiro membro ativo para checklist
   const firstMemberId = members[0]?.id ?? ''
 
   return (

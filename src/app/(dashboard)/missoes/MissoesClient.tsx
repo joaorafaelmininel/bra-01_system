@@ -7,11 +7,12 @@ type Mission = Record<string, any>
 type Props = { missions: Mission[] }
 
 const faseConfig: Record<string, { color: string; bg: string; border: string }> = {
-  'Planejamento': { color: '#009EDB', bg: 'rgba(0,158,219,0.12)',  border: 'rgba(0,158,219,0.25)' },
-  'Ativação':     { color: '#FFDF00', bg: 'rgba(255,223,0,0.1)',   border: 'rgba(255,223,0,0.25)' },
-  'Em campo':     { color: '#E87722', bg: 'rgba(232,119,34,0.12)', border: 'rgba(232,119,34,0.3)' },
-  'Encerramento': { color: '#9BA8BC', bg: 'rgba(155,168,188,0.1)', border: 'rgba(155,168,188,0.2)' },
-  'Arquivada':    { color: '#2E3848', bg: 'rgba(46,56,72,0.3)',    border: 'rgba(46,56,72,0.5)' },
+  'Desmobilizado':    { color: '#5A6478', bg: 'rgba(90,100,120,0.15)',  border: 'rgba(90,100,120,0.3)' },
+  'Monitoramento':    { color: '#009EDB', bg: 'rgba(0,158,219,0.12)',   border: 'rgba(0,158,219,0.25)' },
+  'Em prontidão':     { color: '#FFDF00', bg: 'rgba(255,223,0,0.1)',    border: 'rgba(255,223,0,0.25)' },
+  'Em mobilização':   { color: '#E87722', bg: 'rgba(232,119,34,0.12)',  border: 'rgba(232,119,34,0.3)' },
+  'Desdobrado':       { color: '#FF6B6B', bg: 'rgba(204,0,0,0.12)',     border: 'rgba(204,0,0,0.3)' },
+  'Missão concluída': { color: '#00A550', bg: 'rgba(0,165,80,0.12)',    border: 'rgba(0,165,80,0.25)' },
 }
 
 const tipoConfig: Record<string, { color: string }> = {
@@ -34,18 +35,18 @@ function formatDate(d: string | null) {
 }
 
 function Stats({ missions }: { missions: Mission[] }) {
-  const total       = missions.length
-  const emCampo     = missions.filter(m => m.fase === 'Em campo').length
-  const planejando  = missions.filter(m => ['Planejamento', 'Ativação'].includes(m.fase)).length
-  const arquivadas  = missions.filter(m => m.fase === 'Arquivada').length
+  const total      = missions.length
+  const desdobrado = missions.filter(m => m.fase === 'Desdobrado').length
+  const ativas     = missions.filter(m => ['Monitoramento', 'Em prontidão', 'Em mobilização'].includes(m.fase)).length
+  const concluidas = missions.filter(m => m.fase === 'Missão concluída').length
 
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 10 }}>
       {[
         { label: 'Total de missões',  val: total,      color: '#009EDB', border: '#009EDB' },
-        { label: 'Em campo',          val: emCampo,    color: emCampo > 0 ? '#E87722' : '#5A6478', border: emCampo > 0 ? '#E87722' : 'rgba(255,255,255,0.07)' },
-        { label: 'Em planejamento',   val: planejando,  color: '#009EDB', border: '#009EDB' },
-        { label: 'Arquivadas',        val: arquivadas,  color: '#5A6478', border: 'rgba(255,255,255,0.07)' },
+        { label: 'Desdobrado',        val: desdobrado, color: desdobrado > 0 ? '#FF6B6B' : '#5A6478', border: desdobrado > 0 ? '#FF6B6B' : 'rgba(255,255,255,0.07)' },
+        { label: 'Em acompanhamento', val: ativas,     color: ativas > 0 ? '#E87722' : '#5A6478',     border: ativas > 0 ? '#E87722' : 'rgba(255,255,255,0.07)' },
+        { label: 'Missões concluídas',val: concluidas, color: '#00A550', border: '#00A550' },
       ].map(c => (
         <div key={c.label} style={{ background: '#131920', border: '1px solid rgba(255,255,255,0.07)', borderTop: `3px solid ${c.border}`, borderRadius: 5, padding: '12px 14px' }}>
           <div style={{ fontFamily: 'var(--font-cond)', fontSize: 32, fontWeight: 800, color: c.color, lineHeight: 1 }}>{c.val}</div>
@@ -57,12 +58,12 @@ function Stats({ missions }: { missions: Mission[] }) {
 }
 
 export default function MissoesClient({ missions }: Props) {
-  const [search, setSearch]       = useState('')
+  const [search, setSearch]         = useState('')
   const [filterFase, setFilterFase] = useState('Todos')
   const [filterTipo, setFilterTipo] = useState('Todos')
 
-  const fases = ['Todos', 'Planejamento', 'Ativação', 'Em campo', 'Encerramento', 'Arquivada']
-  const tipos = ['Todos', 'operação real', 'exercício', 'treinamento']
+  const fases = ['Todos', 'Desmobilizado', 'Monitoramento', 'Em prontidão', 'Em mobilização', 'Desdobrado', 'Missão concluída']
+  const tipos = ['Todos', 'Operação real', 'Exercício', 'Treinamento']
 
   const filtered = useMemo(() => missions.filter(m => {
     const q = search.toLowerCase()

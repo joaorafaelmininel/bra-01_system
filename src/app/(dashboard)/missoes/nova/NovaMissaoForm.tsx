@@ -8,7 +8,14 @@ type Member = Record<string, any>
 type Props = { members: Member[] }
 
 const TIPO_OPTS = ['Operação real', 'Exercício', 'Treinamento']
-const FASE_OPTS = ['Planejamento', 'Ativação', 'Em campo', 'Encerramento', 'Arquivada']
+const FASE_OPTS = [
+  'Desmobilizado',
+  'Monitoramento',
+  'Em prontidão',
+  'Em mobilização',
+  'Desdobrado',
+  'Missão concluída',
+]
 
 const inputStyle: React.CSSProperties = {
   width: '100%', background: '#131920',
@@ -48,7 +55,7 @@ export default function NovaMissaoForm({ members }: Props) {
   const [error, setError] = useState<string | null>(null)
 
   const [form, setForm] = useState({
-    nome: '', codigo: '', tipo: 'exercício', fase: 'Planejamento',
+    nome: '', codigo: '', tipo: 'Exercício', fase: 'Desmobilizado',
     pais: 'Brasil', cidade: '', descricao: '',
     data_ativacao: '', data_retorno: '',
     lider_id: '',
