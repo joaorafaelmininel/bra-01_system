@@ -1,0 +1,13 @@
+<svg viewBox="0 0 680 680" width="100%" xmlns="http://www.w3.org/2000/svg">
+  <rect x="140" y="140" width="400" height="400" rx="72" fill="#0D1117"/>
+  <rect x="140" y="140" width="52" height="400" fill="#009C3B"/>
+  <rect x="192" y="140" width="26" height="400" fill="#FFDF00"/>
+  <rect x="218" y="140" width="40" height="400" fill="#002776"/>
+  <rect x="258" y="140" width="20" height="400" fill="#FFFFFF"/>
+  <rect x="278" y="140" width="262" height="400" fill="#0D1117"/>
+  <rect x="275" y="140" width="3" height="400" fill="rgba(255,255,255,0.06)"/>
+  <text x="295" y="415" font-family="'Barlow Condensed', Arial Narrow, Arial, sans-serif" font-weight="800" font-size="72" letter-spacing="0">
+    <tspan fill="#FFFFFF">BRA</tspan><tspan fill="#E87722">-01</tspan>
+  </text>
+  <rect x="140" y="140" width="400" height="400" rx="72" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="1.5"/>
+</svg>
