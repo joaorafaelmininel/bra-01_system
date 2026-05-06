@@ -170,7 +170,7 @@ export default function PainelClient({ members, activeAlerts }: Props) {
           <div style={{ background: '#0F1923', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 6, overflow: 'hidden', minWidth: 0 }}>
             <div style={{ padding: '11px 16px', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ fontFamily: cond, fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#9BA8BC' }}>
-                Distribuição por corpo
+                Distribuição por Instituição
               </span>
               <span style={{ fontFamily: mono, fontSize: 9, color: dim }}>{members.length} total</span>
             </div>
@@ -271,7 +271,7 @@ export default function PainelClient({ members, activeAlerts }: Props) {
           <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#00A550', boxShadow: '0 0 4px #00A55070', display: 'inline-block' }} />
           Sistema online
         </span>
-        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>BRA-01 Heavy USAR Team · SP · MG · PR</span>
+        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>BRA-01 Heavy USAR Team · MG · PR · SP</span>
         <span style={{ marginLeft: 'auto', flexShrink: 0 }}>v1.0.0-alpha</span>
       </div>
     </div>

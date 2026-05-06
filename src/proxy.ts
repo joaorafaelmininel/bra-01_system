@@ -32,11 +32,15 @@ export async function proxy(request: NextRequest) {
 
   const { pathname } = request.nextUrl
 
-  if (!user && pathname !== '/login') {
+  // Rotas públicas — acessíveis sem autenticação
+  const publicRoutes = ['/login', '/register']
+
+  if (!user && !publicRoutes.includes(pathname)) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  if (user && pathname === '/login') {
+  // Usuário autenticado tentando acessar login ou register → redireciona para home
+  if (user && publicRoutes.includes(pathname)) {
     return NextResponse.redirect(new URL('/', request.url))
   }
 
