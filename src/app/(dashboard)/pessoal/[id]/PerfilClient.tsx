@@ -126,7 +126,7 @@ function ModalQualificacao({ memberId, onClose, onSaved }: { memberId: string; o
   const [error, setError] = useState<string | null>(null)
   const [form, setForm] = useState({ codigo_curso: '', nome_curso: '', entidade_emissora: '', nivel: 'Básica', data_conclusao: '', data_validade: '', carga_horaria_h: '', observacao: '' })
 
-  function set(f: string) { return (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => setForm(p => ({ ...p, [f]: e.target.value })) }
+  function set(f: string) { return (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => setForm(p => ({ ...p, [f]: e.target.tagName === 'SELECT' || e.target.type === 'email' ? e.target.value : e.target.value.toUpperCase() })) }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -184,7 +184,7 @@ function ModalVacina({ memberId, vaccineCatalog, appliedVaccines, onClose, onSav
   const [error, setError] = useState<string | null>(null)
   const [form, setForm] = useState({ vaccine_id: vaccineCatalog[0]?.id ?? '', data_aplicacao: '', data_vencimento: '', lote: '' })
 
-  function set(f: string) { return (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setForm(p => ({ ...p, [f]: e.target.value })) }
+  function set(f: string) { return (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setForm(p => ({ ...p, [f]: e.target.tagName === 'SELECT' || e.target.type === 'email' ? e.target.value : e.target.value.toUpperCase() })) }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -298,7 +298,7 @@ function ModalIdioma({ memberId, onClose, onSaved }: { memberId: string; onClose
   const [error, setError] = useState<string | null>(null)
   const [form, setForm] = useState({ idioma: '', nivel: 'Intermediário', certificado: '' })
 
-  function set(f: string) { return (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setForm(p => ({ ...p, [f]: e.target.value })) }
+  function set(f: string) { return (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setForm(p => ({ ...p, [f]: e.target.tagName === 'SELECT' || e.target.type === 'email' ? e.target.value : e.target.value.toUpperCase() })) }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()

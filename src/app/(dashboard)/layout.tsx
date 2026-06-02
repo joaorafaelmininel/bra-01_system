@@ -27,6 +27,8 @@ const navItems = [
   { label: 'Painel de Gestão', href: '/' },
   { label: 'Efetivo',          href: '/pessoal' },
   { label: 'Equipamentos',     href: '/equipamentos' },
+  { label: 'Caixas de Logística',     href: '/caixas' },
+  { label: 'Cães de Busca e Resgate', href: '/caes' },
   { label: 'Capacitação',      href: '/treinamento' },
   { label: 'Organograma',      href: '/organograma' },
   { label: 'Missões',          href: '/missoes' },
@@ -38,6 +40,8 @@ const sidebarItems = [
   { label: 'Painel de Gestão', href: '/',            icon: 'home'    },
   { label: 'Efetivo',          href: '/pessoal',      icon: 'users'   },
   { label: 'Equipamentos',     href: '/equipamentos', icon: 'tool'    },
+  { label: 'Caixas de Logística',      href: '/caixas',       icon: 'box',  sub: true },
+  { label: 'Cães de Busca e Resgate',  href: '/caes',         icon: 'dog',  sub: true },
   { label: 'Capacitação',      href: '/treinamento',  icon: 'book'    },
   { label: 'Organograma',      href: '/organograma',  icon: 'org'     },
   { label: 'Missões',          href: '/missoes',      icon: 'flag'    },
@@ -65,6 +69,8 @@ function Icon({ name, size = 16 }: { name: string; size?: number }) {
     case 'flag':    return <svg {...props}><path strokeLinecap="round" strokeLinejoin="round" d="M3 3v1.5M3 21v-6m0 0l2.77-.693a9 9 0 016.208.682l.108.054a9 9 0 006.086.71l3.114-.732a48.524 48.524 0 01-.005-10.499l-3.11.732a9 9 0 01-6.085-.711l-.108-.054a9 9 0 00-6.208-.682L3 4.5M3 15V4.5" /></svg>
     case 'shield':  return <svg {...props}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" /></svg>
     case 'chart':   return <svg {...props}><path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" /></svg>
+    case 'box':     return <svg {...props}><path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>
+    case 'dog':     return <svg {...props}><path strokeLinecap="round" strokeLinejoin="round" d="M6 2L9.5 5.5M18 2L14.5 5.5M9.5 5.5C8 5.5 7 7 7 8.5V12C7 14.5 9 16.5 12 16.5s5-2 5-4.5V8.5C17 7 16 5.5 14.5 5.5H9.5zM10 10v.01M14 10v.01M11 13c.3.5 1.7.5 2 0M12 16.5V20M9.5 20h5" /></svg>
     case 'profile': return <svg {...props}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
     default:        return <svg {...props}><circle cx="12" cy="12" r="4" /></svg>
   }
@@ -126,6 +132,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
             }
             .sidebar-link:hover { background: rgba(255,255,255,0.05); color: #9BA8BC; }
             .sidebar-link.active { background: rgba(232,119,34,0.12); color: #E87722; }
+            input:not([type="email"]):not([type="color"]):not([type="range"]):not([type="file"]),
+            textarea { text-transform: uppercase; }
             .btn-sair {
               display: flex; align-items: center; gap: 6px;
               padding: 5px 10px; border-radius: 3px; cursor: pointer;
@@ -226,7 +234,17 @@ export default async function DashboardLayout({ children }: { children: React.Re
               {/* Nav */}
               <nav style={{ padding: '10px 6px', flex: 1 }}>
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: 8, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#2E3848', padding: '0 6px', marginBottom: 6 }}>Navegação</div>
-                {sidebarItems.map(item => (
+                {sidebarItems.map(item => item.sub ? (
+                  <div key={item.href} style={{ display: 'flex', alignItems: 'stretch', marginBottom: 1 }}>
+                    <div style={{ width: 18, flexShrink: 0, display: 'flex', alignItems: 'center', paddingLeft: 10 }}>
+                      <div style={{ width: 8, height: 14, borderLeft: '1px solid #2E3848', borderBottom: '1px solid #2E3848', borderBottomLeftRadius: 2 }} />
+                    </div>
+                    <Link href={item.href} className="sidebar-link" style={{ flex: 1, fontSize: 11, padding: '5px 8px' }}>
+                      <Icon name={item.icon} size={12} />
+                      {item.label}
+                    </Link>
+                  </div>
+                ) : (
                   <Link key={item.href} href={item.href} className="sidebar-link" style={{ marginBottom: 1 }}>
                     <Icon name={item.icon} size={14} />
                     {item.label}

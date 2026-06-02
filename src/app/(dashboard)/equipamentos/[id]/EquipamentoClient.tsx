@@ -99,7 +99,7 @@ function ModalManutencao({ itemId, members, onClose, onSaved }: { itemId: string
 
   function set(f: string) {
     return (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
-      setForm(p => ({ ...p, [f]: e.target.value }))
+      setForm(p => ({ ...p, [f]: e.target.tagName === 'SELECT' || e.target.type === 'email' ? e.target.value : e.target.value.toUpperCase() }))
   }
 
   async function handleSubmit(e: React.FormEvent) {

@@ -137,11 +137,11 @@ export default function MeuPerfilClient({ user, profile, member }: Props) {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
             <div>
               <label style={labelStyle}>Nome completo</label>
-              <input value={form.nome_completo} onChange={e => set('nome_completo', e.target.value)} style={inputStyle} placeholder="Nome completo" />
+              <input value={form.nome_completo} onChange={e => set('nome_completo', e.target.value.toUpperCase())} style={inputStyle} placeholder="Nome completo" />
             </div>
             <div>
               <label style={labelStyle}>Nome de guerra</label>
-              <input value={form.nome_guerra} onChange={e => set('nome_guerra', e.target.value)} style={inputStyle} placeholder="Ex: MININEL" />
+              <input value={form.nome_guerra} onChange={e => set('nome_guerra', e.target.value.toUpperCase())} style={inputStyle} placeholder="Ex: MININEL" />
             </div>
           </div>
 

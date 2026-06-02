@@ -84,7 +84,7 @@ function ModalParticipante({ missionId, members, currentIds, usarFunctions, onCl
   const [error, setError] = useState<string | null>(null)
   const available = members.filter((m: any) => !currentIds.includes(m.id))
   const [form, setForm] = useState({ member_id: available[0]?.id ?? '', function_id: '', data_embarque: '', data_retorno: '', observacao: '' })
-  function set(f: string) { return (e: any) => setForm(p => ({ ...p, [f]: e.target.value })) }
+  function set(f: string) { return (e: any) => setForm(p => ({ ...p, [f]: e.target.tagName === 'SELECT' || e.target.type === 'email' ? e.target.value : e.target.value.toUpperCase() })) }
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault(); setLoading(true); setError(null)
     const supabase = createClient()
@@ -115,7 +115,7 @@ function ModalEquipamento({ missionId, catalog, currentIds, onClose, onSaved }: 
   const [error, setError] = useState<string | null>(null)
   const available = catalog.filter((e: any) => !currentIds.includes(e.id))
   const [form, setForm] = useState({ equipment_id: available[0]?.id ?? '', quantidade: '1', condicao_saida: 'Operacional', observacao: '' })
-  function set(f: string) { return (e: any) => setForm(p => ({ ...p, [f]: e.target.value })) }
+  function set(f: string) { return (e: any) => setForm(p => ({ ...p, [f]: e.target.tagName === 'SELECT' || e.target.type === 'email' ? e.target.value : e.target.value.toUpperCase() })) }
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault(); setLoading(true); setError(null)
     const supabase = createClient()

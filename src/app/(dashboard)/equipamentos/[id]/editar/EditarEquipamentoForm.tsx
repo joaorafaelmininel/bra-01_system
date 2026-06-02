@@ -123,7 +123,7 @@ export default function EditarEquipamentoForm({ item, sections, groups, members,
 
   function set(field: string) {
     return (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-      setForm(prev => ({ ...prev, [field]: e.target.value }))
+      setForm(prev => ({ ...prev, [field]: e.target.tagName === 'SELECT' || e.target.type === 'email' ? e.target.value : e.target.value.toUpperCase() }))
     }
   }
 

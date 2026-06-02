@@ -144,7 +144,7 @@ export default function EditarMembroForm({ member }: { member: Member }) {
 
   function set(field: string) {
     return (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-      let value = e.target.value
+      let value = e.target.tagName === 'SELECT' || e.target.type === 'email' ? e.target.value : e.target.value.toUpperCase()
       if (field === 'cpf') value = formatCPF(value)
       if (['telefone_celular','telefone_funcional','contato_emergencia_telefone'].includes(field)) value = formatPhone(value)
       setForm(prev => ({ ...prev, [field]: value }))

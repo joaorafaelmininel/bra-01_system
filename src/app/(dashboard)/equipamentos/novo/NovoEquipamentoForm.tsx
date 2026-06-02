@@ -25,7 +25,7 @@ const PROPRIETARIO_OPTS = [
   { label: 'CBMMG — Minas Gerais',   value: 'CBMMG',           sufixo: 'm' },
   { label: 'CBMPR — Paraná',         value: 'CBMPR',           sufixo: 'p' },
   { label: 'Governo Federal',        value: 'Governo Federal',  sufixo: 'f' },
-  { label: 'BRA-01 (compartilhado)', value: 'BRA-01',           sufixo: 'b' },
+  { label: 'BRA-01 — Compartilhado', value: 'BRA-01',           sufixo: 'b' },
 ]
 
 const inputStyle: React.CSSProperties = {
@@ -95,7 +95,7 @@ export default function NovoEquipamentoForm({ sections, groups, members, parentI
 
   function set(field: string) {
     return (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-      setForm(prev => ({ ...prev, [field]: e.target.value }))
+      setForm(prev => ({ ...prev, [field]: e.target.tagName === 'SELECT' || e.target.type === 'email' ? e.target.value : e.target.value.toUpperCase() }))
     }
   }
 
